@@ -21,8 +21,6 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    // protected static string | UnitEnum | null $navigationIcon = 'heroicon-o-tag';
-
     protected static string | UnitEnum | null $navigationGroup = 'Content';
 
     public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
@@ -61,8 +59,8 @@ class CategoryResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('slug')->searchable()->sortable(),
-                Tables\Columns\TextColumn::make('courses_count')->counts('courses')->label('Courses')->visible(fn (Category $record): bool => $record->isForCourses()),
-                Tables\Columns\TextColumn::make('past_questions_count')->counts('pastQuestions')->label('Past Questions')->visible(fn (Category $record): bool => $record->isForPastQuestions()),
+                Tables\Columns\TextColumn::make('courses_count')->counts('courses')->label('Courses')->visible(fn (?Category $record): bool => $record !== null && $record->isForCourses()),
+                Tables\Columns\TextColumn::make('past_questions_count')->counts('pastQuestions')->label('Past Questions')->visible(fn (?Category $record): bool => $record !== null && $record->isForPastQuestions()),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
             ])
             ->filters([
