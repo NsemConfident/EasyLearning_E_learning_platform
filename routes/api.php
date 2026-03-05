@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\LessonController;
 use App\Http\Controllers\Api\PastQuestionController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\Admin\PastQuestionController as AdminPastQuestionController;
 
 Route::prefix('auth')->group(function () {
@@ -15,6 +16,10 @@ Route::prefix('auth')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout', [AuthController::class, 'logout']);
     Route::get('me', [AuthController::class, 'me']);
+
+    // Categories (reusable for courses & past questions)
+    Route::get('categories', [CategoryController::class, 'index']);
+    Route::get('categories/{category}', [CategoryController::class, 'show']);
 
     // Courses
     Route::get('courses', [CourseController::class, 'index']);

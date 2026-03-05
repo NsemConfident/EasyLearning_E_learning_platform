@@ -29,6 +29,11 @@ class PastQuestionResource extends Resource
     {
         return $schema
             ->schema([
+                Forms\Components\Select::make('category_id')
+                    ->relationship('category', 'name', modifyQueryUsing: fn ($query) => $query->forPastQuestions())
+                    ->searchable()
+                    ->preload()
+                    ->nullable(),
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
@@ -43,9 +48,6 @@ class PastQuestionResource extends Resource
                 Forms\Components\TextInput::make('year')
                     ->required()
                     ->maxLength(10),
-                Forms\Components\TextInput::make('category')
-                    ->maxLength(255)
-                    ->nullable(),
                 Forms\Components\FileUpload::make('file_path')
                     ->label('PDF File')
                     ->disk('public')
@@ -67,6 +69,7 @@ class PastQuestionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable(),
+                Tables\Columns\TextColumn::make('category.name')->label('Category')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('subject')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('level')->sortable(),

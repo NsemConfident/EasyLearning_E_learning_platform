@@ -4,17 +4,29 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CourseResource;
+use App\Models\Category;
 use App\Models\Course;
 use App\Models\LessonUserProgress;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CourseController extends Controller
 {
     public function index(Request $request)
     {
-        $courses = Course::query()
+        $request->validate([
+            'category_id' => ['nullable', 'integer', Rule::exists('categories', 'id')->where('type', Category::TYPE_COURSE)],
+        ]);
+
+        $query = Course::query()
             ->where('is_published', true)
-            ->paginate(10);
+            ->with('category');
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        $courses = $query->paginate(10);
 
         return CourseResource::collection($courses);
     }
@@ -23,7 +35,7 @@ class CourseController extends Controller
     {
         abort_unless($course->is_published, 404);
 
-        $course->load(['modules.lessons']);
+        $course->load(['category', 'modules.lessons']);
 
         return new CourseResource($course);
     }
@@ -45,7 +57,7 @@ class CourseController extends Controller
         /** @var \App\Models\User $user */
         $user = $request->user();
 
-        $course->load('modules.lessons');
+        $course->load(['category', 'modules.lessons']);
 
         $lessonIds = $course->modules->flatMap->lessons->pluck('id');
         $totalLessons = $lessonIds->count();

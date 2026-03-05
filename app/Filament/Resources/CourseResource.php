@@ -29,6 +29,11 @@ class CourseResource extends Resource
     {
         return $schema
             ->schema([
+                Forms\Components\Select::make('category_id')
+                    ->relationship('category', 'name', modifyQueryUsing: fn ($query) => $query->forCourses())
+                    ->searchable()
+                    ->preload()
+                    ->nullable(),
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
@@ -53,6 +58,7 @@ class CourseResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable(),
+                Tables\Columns\TextColumn::make('category.name')->label('Category')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('instructor_name')->sortable(),
                 Tables\Columns\TextColumn::make('price'),

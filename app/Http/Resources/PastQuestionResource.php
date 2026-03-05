@@ -16,12 +16,13 @@ class PastQuestionResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'category_id' => $this->category_id,
+            'category' => new CategoryResource($this->whenLoaded('category')),
             'title' => $this->title,
             'description' => $this->description,
             'subject' => $this->subject,
             'level' => $this->level,
             'year' => $this->year,
-            'category' => $this->category,
             'file_size' => $this->file_size,
             'is_published' => $this->is_published,
             'created_at' => $this->created_at,

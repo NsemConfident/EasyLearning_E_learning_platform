@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PastQuestionResource;
+use App\Models\Category;
 use App\Models\PastQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class PastQuestionController extends Controller
 {
@@ -18,7 +20,11 @@ class PastQuestionController extends Controller
             'subject' => ['required', 'string', 'max:255'],
             'level' => ['required', 'string', 'max:255'],
             'year' => ['required', 'string', 'max:10'],
-            'category' => ['nullable', 'string', 'max:255'],
+            'category_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('categories', 'id')->where('type', Category::TYPE_PAST_QUESTION),
+            ],
             'file' => ['required', 'file', 'mimes:pdf', 'max:20480'], // 20MB
             'is_published' => ['sometimes', 'boolean'],
         ]);
@@ -32,7 +38,7 @@ class PastQuestionController extends Controller
             'subject' => $validated['subject'],
             'level' => $validated['level'],
             'year' => $validated['year'],
-            'category' => $validated['category'] ?? null,
+            'category_id' => $validated['category_id'] ?? null,
             'file_path' => $path,
             'file_size' => $file->getSize(),
             'is_published' => $validated['is_published'] ?? false,
@@ -50,7 +56,12 @@ class PastQuestionController extends Controller
             'subject' => ['sometimes', 'string', 'max:255'],
             'level' => ['sometimes', 'string', 'max:255'],
             'year' => ['sometimes', 'string', 'max:10'],
-            'category' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'category_id' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                Rule::exists('categories', 'id')->where('type', Category::TYPE_PAST_QUESTION),
+            ],
             'file' => ['sometimes', 'file', 'mimes:pdf', 'max:20480'],
             'is_published' => ['sometimes', 'boolean'],
         ]);

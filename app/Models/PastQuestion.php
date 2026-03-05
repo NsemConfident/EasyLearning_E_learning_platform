@@ -10,6 +10,7 @@ class PastQuestion extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'category_id',
         'title',
         'description',
         'subject',
@@ -22,6 +23,11 @@ class PastQuestion extends Model
         'is_published',
         'created_by',
     ];
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
     public function creator()
     {

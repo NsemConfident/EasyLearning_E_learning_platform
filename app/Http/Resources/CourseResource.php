@@ -16,6 +16,8 @@ class CourseResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'category_id' => $this->category_id,
+            'category' => new CategoryResource($this->whenLoaded('category')),
             'title' => $this->title,
             'description' => $this->description,
             'thumbnail' => $this->thumbnail,
