@@ -35,7 +35,7 @@ class PastQuestionController extends Controller
     {
         abort_unless($pastQuestion->is_published, 404);
 
-        $pastQuestion->load('category');
+        $pastQuestion->load(['category', 'answers']);
 
         return new PastQuestionResource($pastQuestion);
     }

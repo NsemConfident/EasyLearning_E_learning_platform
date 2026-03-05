@@ -13,6 +13,11 @@ class ListPastQuestions extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('directUpload')
+                ->label('Add via direct upload')
+                ->url(route('admin.past-questions.direct-upload.form'))
+                ->color('gray')
+                ->openUrlInNewTab(false),
             Actions\CreateAction::make(),
         ];
     }

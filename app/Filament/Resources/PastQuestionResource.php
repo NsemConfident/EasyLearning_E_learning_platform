@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PastQuestionResource\Pages;
+use App\Models\Category;
 use App\Models\PastQuestion;
 use Filament\Forms;
 use Filament\Schemas\Schema;
@@ -20,6 +21,8 @@ class PastQuestionResource extends Resource
 {
     protected static ?string $model = PastQuestion::class;
 
+    protected static ?int $navigationSort = 1;
+
     public static function getNavigationIcon(): string|BackedEnum|Htmlable|null
     {
         return 'heroicon-o-document-text';
@@ -30,7 +33,8 @@ class PastQuestionResource extends Resource
         return $schema
             ->schema([
                 Forms\Components\Select::make('category_id')
-                    ->relationship('category', 'name', modifyQueryUsing: fn ($query) => $query->forPastQuestions())
+                    ->label('Category')
+                    ->options(fn () => Category::forPastQuestions()->orderBy('name')->pluck('name', 'id'))
                     ->searchable()
                     ->preload()
                     ->nullable(),
@@ -53,9 +57,10 @@ class PastQuestionResource extends Resource
                     ->disk('public')
                     ->directory('past-questions')
                     ->acceptedFileTypes(['application/pdf'])
-                    ->maxSize(20480)
+                    ->maxSize(20480) // 20MB – ensure PHP upload_max_filesize & post_max_size allow this
                     ->required()
-                    ->downloadable(),
+                    ->downloadable()
+                    ->helperText('Max 20 MB. If upload fails, increase upload_max_filesize and post_max_size in php.ini (e.g. to 25M).'),
                 Forms\Components\Toggle::make('is_published')
                     ->label('Published'),
                 Forms\Components\TextInput::make('download_count')

@@ -25,6 +25,7 @@ class PastQuestionResource extends JsonResource
             'year' => $this->year,
             'file_size' => $this->file_size,
             'is_published' => $this->is_published,
+            'answers' => PastQuestionAnswerResource::collection($this->whenLoaded('answers')),
             'created_at' => $this->created_at,
         ];
     }

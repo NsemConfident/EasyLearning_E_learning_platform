@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\LessonController;
 use App\Http\Controllers\Api\PastQuestionController;
+use App\Http\Controllers\Api\PastQuestionAnswerController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\Admin\PastQuestionController as AdminPastQuestionController;
 
@@ -36,12 +37,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('past-questions/search', [PastQuestionController::class, 'search']);
     Route::get('past-questions/{pastQuestion}/download', [PastQuestionController::class, 'download']);
 
+    // Past question answers (answer PDFs linked to a past question)
+    Route::get('past-questions/{pastQuestion}/answers', [PastQuestionAnswerController::class, 'index']);
+    Route::get('past-questions/{pastQuestion}/answers/{answer}/download', [PastQuestionAnswerController::class, 'download']);
+
     // Admin past questions
     Route::prefix('admin')->middleware('can:managePastQuestions')->group(function () {
         Route::post('past-questions', [AdminPastQuestionController::class, 'store']);
         Route::put('past-questions/{pastQuestion}', [AdminPastQuestionController::class, 'update']);
         Route::delete('past-questions/{pastQuestion}', [AdminPastQuestionController::class, 'destroy']);
     });
-}
-);
+});
 
