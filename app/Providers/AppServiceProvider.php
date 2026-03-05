@@ -54,6 +54,7 @@ class AppServiceProvider extends ServiceProvider
             storage_path('app/public'),
             storage_path('app/public/past-questions'),
             storage_path('app/public/past-question-answers'),
+            storage_path('app/public/lesson-videos'),
             storage_path('app/public/livewire-tmp'), // Livewire temp uploads when disk is 'public'
             storage_path('app/private'),
             storage_path('app/private/livewire-tmp'),
